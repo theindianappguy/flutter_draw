@@ -1,4 +1,4 @@
-# Paint App
+# Flutter Draw
 
 A beautiful drawing view for a your flutter application.
 
