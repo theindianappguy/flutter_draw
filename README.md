@@ -1,6 +1,6 @@
 # Flutter Draw
 
-A beautiful drawing view for a your flutter application.
+A beautiful drawing view for a your flutter application with single line of code.
 
 To start with this, we need to simply add the dependencies in the gradle file of our app module like this
 
