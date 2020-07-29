@@ -65,7 +65,7 @@ Future<File> takeScreenshotAndSave() async {
 
   await _askPermission();
   final result =
-  await ImageGallerySaver.saveImage(Uint8List.fromList(pngBytes));
+      await ImageGallerySaver.saveImage(Uint8List.fromList(pngBytes));
   print(result);
   imgFile.writeAsBytes(pngBytes);
   return imgFile;
@@ -73,11 +73,9 @@ Future<File> takeScreenshotAndSave() async {
 
 _askPermission() async {
   if (Platform.isIOS) {
-    /*Map<PermissionGroup, PermissionStatus> permissions =
-    */await PermissionHandler().requestPermissions([PermissionGroup.photos]);
+    await Permission.photos.request();
   } else {
-    /*PermissionStatus permission =*/ await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.storage);
+    await Permission.storage.request();
   }
 }
 
@@ -87,7 +85,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   List<GradientModel> gradients = new List<GradientModel>();
 
   @override
@@ -102,8 +99,8 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     super.dispose();
   }
-  var pathSave;
 
+  var pathSave;
 
   Widget paintScreen() {
     return RepaintBoundary(
@@ -118,8 +115,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading:  InkWell(
-          onTap: (){
+        leading: InkWell(
+          onTap: () {
             Navigator.pop(context);
           },
           child: Container(
@@ -133,7 +130,7 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: <Widget>[
           InkWell(
-            onTap: (){
+            onTap: () {
               Navigator.pop(context, takeScreenshotAndSave());
             },
             child: Container(
@@ -145,10 +142,7 @@ class _HomePageState extends State<HomePage> {
       ),
       backgroundColor: Colors.grey,
       body: Column(
-        children: <Widget>[
-          ColorsList(gradients),
-          paintScreen()
-        ],
+        children: <Widget>[ColorsList(gradients), paintScreen()],
       ),
       bottomSheet: BottomToolBar(),
     );
@@ -157,6 +151,7 @@ class _HomePageState extends State<HomePage> {
 
 class ColorsList extends StatefulWidget {
   final List<GradientModel> gradients;
+
   ColorsList(this.gradients);
 
   @override
@@ -175,47 +170,47 @@ class _ColorsListState extends State<ColorsList> {
           itemBuilder: (context, index) {
             return Container(
                 child: Column(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedColor = widget.gradients[index].topColor;
-                          setPaintController();
-                        });
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        color: widget.gradients[index].topColor,
-                        child: selectedColor == widget.gradients[index].topColor
-                            ? Icon(
-                          Icons.check,
-                          color: Colors.white,
-                        )
-                            : Container(),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedColor = widget.gradients[index].bottomColor;
-                          setPaintController();
-                        });
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        color: widget.gradients[index].bottomColor,
-                        child: selectedColor == widget.gradients[index].bottomColor
-                            ? Icon(
-                          Icons.check,
-                          color: Colors.white,
-                        )
-                            : Container(),
-                      ),
-                    ),
-                  ],
-                ));
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedColor = widget.gradients[index].topColor;
+                      setPaintController();
+                    });
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    color: widget.gradients[index].topColor,
+                    child: selectedColor == widget.gradients[index].topColor
+                        ? Icon(
+                            Icons.check,
+                            color: Colors.white,
+                          )
+                        : Container(),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedColor = widget.gradients[index].bottomColor;
+                      setPaintController();
+                    });
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    color: widget.gradients[index].bottomColor,
+                    child: selectedColor == widget.gradients[index].bottomColor
+                        ? Icon(
+                            Icons.check,
+                            color: Colors.white,
+                          )
+                        : Container(),
+                  ),
+                ),
+              ],
+            ));
           }),
     );
   }
@@ -234,158 +229,160 @@ class _BottomToolBarState extends State<BottomToolBar> {
       color: Colors.white,
       child: Column(
         children: <Widget>[
-          selectingEraserThickness ? Container(
-            height: 50,
-            color: Colors.white,
-            child: Slider(
-              value: eraserThickness,
-              onChanged: (thickness) {
-                setState(() {
-                  eraserThickness = thickness;
-                  setPaintController();
-                });
-              },
-              onChangeEnd: (double) {
-                setState(() {
-                  selectingEraserThickness = false;
-                });
-              },
-              min: 3.0,
-              max: 25.0,
-            ),
-          ) : selectingPenThickness
+          selectingEraserThickness
               ? Container(
-            height: Platform.isIOS ? 70 : 50,
-            color: Colors.white,
-            child: Slider(
-              value: penThickness,
-              onChanged: (thickness) {
-                setState(() {
-                  penThickness = thickness;
-                  setPaintController();
-                });
-              },
-              onChangeEnd: (double) {
-                setState(() {
-                  selectingPenThickness = false;
-                });
-              },
-              min: 3.0,
-              max: 25.0,
-            ),
-          )
-              : Container(
-            height: Platform.isIOS ? 70 : 50,
-            color: Colors.white,
-            child: Row(
-              children: <Widget>[
-                InkWell(
-                  onTap: () {
-                    confirmDialog1(context);
-                  },
-                  child: Container(
-                    height: Platform.isIOS ? 70 : 50,
-                    color: Colors.blue,
-                    width: MediaQuery.of(context).size.width / 5 - 1,
-                    child: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Container(
+                  height: 50,
                   color: Colors.white,
-                  width: 1,
-                ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      if (selectingPenThickness) {
-                        selectingPenThickness = false;
-                      } else {
-                        selectingPenThickness = true;
-                      }
-                    });
-                  },
-                  child: Container(
-                    height: Platform.isIOS ? 70 : 50,
-                    color: Colors.blue,
-                    width: MediaQuery.of(context).size.width / 5 - 1,
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                    ),
+                  child: Slider(
+                    value: eraserThickness,
+                    onChanged: (thickness) {
+                      setState(() {
+                        eraserThickness = thickness;
+                        setPaintController();
+                      });
+                    },
+                    onChangeEnd: (double) {
+                      setState(() {
+                        selectingEraserThickness = false;
+                      });
+                    },
+                    min: 3.0,
+                    max: 25.0,
                   ),
-                ),
-                Container(
-                  color: Colors.white,
-                  width: 1,
-                ),
-                InkWell(
-                  onTap: () {
-                    if (selectingEraserThickness) {
-                      selectingEraserThickness = false;
-                    } else {
-                      selectingEraserThickness = true;
-                    }
-                    setState(() {});
-                    selectedColor = Colors.white;
-                    setPaintController();
-                  },
-                  child: Container(
-                    height: Platform.isIOS ? 70 : 50,
-                    color: Colors.blue,
-                    width: MediaQuery.of(context).size.width / 5 - 1,
-                    child: Icon(
-                      Icons.remove,
+                )
+              : selectingPenThickness
+                  ? Container(
+                      height: Platform.isIOS ? 70 : 50,
                       color: Colors.white,
+                      child: Slider(
+                        value: penThickness,
+                        onChanged: (thickness) {
+                          setState(() {
+                            penThickness = thickness;
+                            setPaintController();
+                          });
+                        },
+                        onChangeEnd: (double) {
+                          setState(() {
+                            selectingPenThickness = false;
+                          });
+                        },
+                        min: 3.0,
+                        max: 25.0,
+                      ),
+                    )
+                  : Material(
+                      color: Colors.blue,
+                      child: Container(
+                        height: Platform.isIOS ? 70 : 50,
+                        child: Row(
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () {
+                                confirmDialog1(context);
+                              },
+                              child: Container(
+                                height: Platform.isIOS ? 70 : 50,
+                                width:
+                                    MediaQuery.of(context).size.width / 5 - 1,
+                                child: Icon(
+                                  Icons.insert_drive_file,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              color: Colors.white,
+                              width: 1,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  if (selectingPenThickness) {
+                                    selectingPenThickness = false;
+                                  } else {
+                                    selectingPenThickness = true;
+                                  }
+                                });
+                              },
+                              child: Container(
+                                height: Platform.isIOS ? 70 : 50,
+                                width:
+                                    MediaQuery.of(context).size.width / 5 - 1,
+                                child: Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              color: Colors.white,
+                              width: 1,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                if (selectingEraserThickness) {
+                                  selectingEraserThickness = false;
+                                } else {
+                                  selectingEraserThickness = true;
+                                }
+                                setState(() {});
+                                selectedColor = Colors.white;
+                                setPaintController();
+                              },
+                              child: Container(
+                                height: Platform.isIOS ? 70 : 50,
+                                width:
+                                    MediaQuery.of(context).size.width / 5 - 1,
+                                child: Icon(
+                                  Icons.clear,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              color: Colors.white,
+                              width: 1,
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                takeScreenshotAndSave();
+                                imageSavedSuccessfullyDialog(context);
+                              },
+                              child: Container(
+                                height: Platform.isIOS ? 70 : 50,
+                                width:
+                                    MediaQuery.of(context).size.width / 5 - 1,
+                                child: Icon(
+                                  Icons.save,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              color: Colors.white,
+                              width: 1,
+                            ),
+                            InkWell(
+                              onTap: _controller.undo,
+                              child: Container(
+                                height: Platform.isIOS ? 70 : 50,
+                                width: MediaQuery.of(context).size.width / 5,
+                                child: Icon(
+                                  Icons.undo,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Container(
-                  color: Colors.white,
-                  width: 1,
-                ),
-                InkWell(
-                  onTap: () async {
-                    takeScreenshotAndSave();
-                    imageSavedSuccessfullyDialog(context);
-                  },
-                  child: Container(
-                    height: Platform.isIOS ? 70 : 50,
-                    color: Colors.blue,
-                    width: MediaQuery.of(context).size.width / 5 - 1,
-                    child: Icon(
-                      Icons.save,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Container(
-                  color: Colors.white,
-                  width: 1,
-                ),
-                InkWell(
-                  onTap: _controller.undo,
-                  child: Container(
-                    height: Platform.isIOS ? 70 : 50,
-                    color: Colors.blue,
-                    width: MediaQuery.of(context).size.width / 5 ,
-                    child: Icon(
-                      Icons.undo,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
   }
 }
-
 
 Future<bool> imageSavedSuccessfullyDialog(BuildContext context) {
   return showDialog<bool>(
@@ -407,7 +404,7 @@ Future<bool> imageSavedSuccessfullyDialog(BuildContext context) {
             ],
           ),
           actions: <Widget>[
-            new FlatButton(
+            FlatButton(
               child: const Text('Ok'),
               onPressed: () {
                 Navigator.pop(context);
@@ -438,14 +435,14 @@ Future<bool> confirmDialog1(BuildContext context) {
             ],
           ),
           actions: <Widget>[
-            new FlatButton(
+            FlatButton(
               child: const Text('Delete and Create New'),
               onPressed: () {
                 controller.clear();
                 Navigator.pop(context);
               },
             ),
-            new FlatButton(
+            FlatButton(
               child: const Text('NO'),
               onPressed: () {
                 Navigator.pop(context);

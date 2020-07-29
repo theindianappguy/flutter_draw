@@ -9,11 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  path_provider: ^1.6.5
-  image_gallery_saver: '^1.2.2'
-  permission_handler: ^4.2.0+hotfix.3
-  dio: ^3.0.9
-  random_string: ^2.0.1
+  path_provider: ^1.6.11
+  image_gallery_saver: ^1.5.0
+  random_string: ^2.1.0
+  permission_handler: ^5.0.1+1
 
 dev_dependencies:
   flutter_test:
