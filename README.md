@@ -6,6 +6,14 @@ To start with this, we need to simply add the dependencies in the gradle file of
 
 Don't forget to star ⭐ the repo it motivates me to share more open source
 
+### Created & Maintained By
+
+[Sanskar Tiwari](https://github.com/theindianappguy) ([@indianappguy](https://twitter.com/indianappguy)) ([YouTube](https://www.youtube.com/c/SanskarTiwari))
+
+> If you found this project helpful or you learned something from the source code and want to thank me,
+> consider checking out what i am building at [MagicSlides.app](https://www.magicslides.app), [MagicForm.app](https://www.magicform.app) & [SheetAI.app](https://www.sheetai.app)
+
+
 ## Installation
 
 First, add `flutter_draw:` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
